@@ -57,4 +57,4 @@ Contributions of any kind welcome! See the [contributing guide](contributing.md)
 
 # License
 
-See [LICENSE](LICENSE) © [David Bernard](https://github.com/davidB/)
+See [LICENSE](LICENSE)

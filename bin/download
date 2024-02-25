@@ -24,7 +24,7 @@ download_release "$ASDF_INSTALL_VERSION" "$release_file"
 #  Extract contents of tar.gz file into the download directory
 case "$archive_format" in
 zip) unzip -j -o -d "${ASDF_DOWNLOAD_PATH}" "$release_file" || fail "Could not extract $release_file" ;;
-tgz) tar -xzf "$release_file" -C "$ASDF_DOWNLOAD_PATH" --strip-components=1 || fail "Could not extract $release_file" ;;
+tgz) tar -xvzf "$release_file" -C "$ASDF_DOWNLOAD_PATH" || fail "Could not extract $release_file" ;;
 *) fail "Unsupported platform" ;;
 esac
 
