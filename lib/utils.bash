@@ -66,6 +66,7 @@ download_release() {
 	local url="$GH_REPO/releases/download/v${version}/cargo-binstall-${architecture}-${platform}.${archive_format}"
 
 	echo "* Downloading $TOOL_NAME release $version..."
+	echo "  url: $url"
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
@@ -80,7 +81,7 @@ install_version() {
 
 	(
 		mkdir -p "$install_path"
-		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
+		cp "$ASDF_DOWNLOAD_PATH"/cargo-binstall "$install_path"
 
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
