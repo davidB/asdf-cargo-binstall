@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+case "$OSTYPE" in
+darwin*) cat <<EOD
+bash
+curl
+unzip
+grep
+
+EOD;;
+linux*) cat <<EOD
+bash
+curl
+tar
+grep
+
+EOD;;
+esac

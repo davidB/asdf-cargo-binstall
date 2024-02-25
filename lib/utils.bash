@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-# TODO: Ensure this is the correct GitHub homepage where releases can be downloaded for cargo-binstall.
 GH_REPO="https://github.com/cargo-bins/cargo-binstall"
 TOOL_NAME="cargo-binstall"
 TOOL_TEST="cargo-binstall -V"
@@ -31,8 +30,6 @@ list_github_tags() {
 }
 
 list_all_versions() {
-	# TODO: Adapt this. By default we simply list the tag names from GitHub releases.
-	# Change this function if cargo-binstall has other means of determining installable versions.
 	list_github_tags
 }
 
@@ -41,8 +38,32 @@ download_release() {
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for cargo-binstall
-	url="$GH_REPO/archive/v${version}.tar.gz"
+	local platform
+
+	case "$OSTYPE" in
+	darwin*) platform="apple-darwin" ;;
+	linux*) platform="unknown-linux-musl" ;;
+	*) fail "Unsupported platform" ;;
+	esac
+
+	local architecture
+
+	case "$(uname -m)" in
+	x86_64*) architecture="x86_64" ;;
+	# They are releasing aarch64 binary since 0.36.7: https://github.com/sagiegurari/cargo-make/commit/ab3cac2261c0ba67ab6d7a277aff8252faec0b1c
+	aarch64 | arm64) architecture="aarch64" ;;
+	*) fail "Unsupported architecture" ;;
+	esac
+
+	local archive_format
+	case "$OSTYPE" in
+	darwin*) archive_format="zip" ;;
+	linux*) archive_format="tgz" ;;
+	*) fail "Unsupported platform" ;;
+	esac
+
+	# url="$GH_REPO/archive/v${version}.tar.gz"
+	local url="$GH_REPO/releases/download/v${version}/cargo-binstall-${architecture}-${platform}.${archive_format}"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
@@ -61,7 +82,6 @@ install_version() {
 		mkdir -p "$install_path"
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
-		# TODO: Assert cargo-binstall executable exists.
 		local tool_cmd
 		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
 		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
