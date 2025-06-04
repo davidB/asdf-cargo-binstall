@@ -23,9 +23,10 @@ sort_versions() {
 		LC_ALL=C sort -t. -k 1,1 -k 2,2n -k 3,3n -k 4,4n -k 5,5n | awk '{print $2}'
 }
 
-list_github_tags() {
+# version 0.x.y are ignored, because 0.1.0 is wrongly released and generates trouble with asdf >= 0.16
+list_github_tags() {}
 	git ls-remote --tags --refs "$GH_REPO" |
-		grep -o -E 'refs/tags/v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+' | cut -d/ -f3- |
+		grep -o -E 'refs/tags/v[1-9][0-9]*\.[[:digit:]]+\.[[:digit:]]+' | cut -d/ -f3- |
 		sed 's/^v//' # NOTE: You might want to adapt this sed to remove non-version strings from tags
 }
 
